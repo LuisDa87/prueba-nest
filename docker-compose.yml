@@ -1,0 +1,64 @@
+version: "3.8"
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: sportsline-db
+    environment:
+      POSTGRES_DB: sportsline
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    networks:
+      - app-net
+
+  api:
+    build: .
+    container_name: sportsline-api
+    environment:
+      NODE_ENV: development
+      PORT: 3000
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: sportsline
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      JWT_SECRET: supersecretjwt
+      JWT_REFRESH_SECRET: supersecretrefresh
+      JWT_EXPIRES_IN: 15m
+      JWT_REFRESH_EXPIRES_IN: 7d
+      # Provide your own RSA keys if you want to use hybrid encryption endpoints
+      RSA_PUBLIC_KEY: ""
+      RSA_PRIVATE_KEY: ""
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - .:/usr/src/app
+    networks:
+      - app-net
+    deploy:
+      resources:
+        limits:
+          cpus: "0.50"
+          memory: 512M
+        reservations:
+          cpus: "0.25"
+          memory: 256M
+
+volumes:
+  db-data:
+
+networks:
+  app-net:
+    driver: bridge
+
