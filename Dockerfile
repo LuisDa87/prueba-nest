@@ -3,13 +3,11 @@ FROM node:18-alpine
 WORKDIR /usr/src/app
 
 COPY package*.json ./
-
 RUN npm install
 
-COPY tsconfig.json ./
+COPY nest-cli.json tsconfig*.json ./
 COPY src ./src
 
 EXPOSE 3000
 
-CMD ["npm", "run", "dev"]
-
+CMD ["npm", "run", "start:dev"]

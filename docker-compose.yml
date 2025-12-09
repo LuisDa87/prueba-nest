@@ -1,10 +1,9 @@
-version: "3.8"
 services:
   db:
     image: postgres:16-alpine
-    container_name: sportsline-db
+    container_name: techhelpdesk-db
     environment:
-      POSTGRES_DB: sportsline
+      POSTGRES_DB: techhelpdesk
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     ports:
@@ -21,13 +20,15 @@ services:
 
   api:
     build: .
-    container_name: sportsline-api
+    container_name: techhelpdesk-api
+    # Ejecuta migraciones y seed antes de iniciar en modo dev
+    command: sh -c "npm run db:migrate && npm run seed && npm run start:dev"
     environment:
       NODE_ENV: development
       PORT: 3000
       DB_HOST: db
       DB_PORT: 5432
-      DB_NAME: sportsline
+      DB_NAME: techhelpdesk
       DB_USER: postgres
       DB_PASSWORD: postgres
       JWT_SECRET: supersecretjwt
@@ -44,6 +45,8 @@ services:
         condition: service_healthy
     volumes:
       - .:/usr/src/app
+      # Mantén node_modules del contenedor (evita conflictos con host)
+      - /usr/src/app/node_modules
     networks:
       - app-net
     deploy:
@@ -61,4 +64,3 @@ volumes:
 networks:
   app-net:
     driver: bridge
-
