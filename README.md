@@ -16,10 +16,6 @@ Requisitos previos
 - Docker Desktop (para levantar Postgres y/o la API en contenedor).
 - Opcional: PostgreSQL local si no usas Docker para la base.
 
-Variables de entorno
-1) Copia `.env.example` a `.env`.
-2) Ajusta: `PORT`, `DB_HOST`, `DB_PORT`, `DB_NAME=techhelpdesk`, `DB_USER`, `DB_PASSWORD`, `JWT_SECRET`, `JWT_REFRESH_SECRET`.
-
 Ejecución con Docker (recomendado)
 1) Levanta la base: `docker compose up -d db` (DB `techhelpdesk`).
 2) (Opcional) Levanta la API: `docker compose up -d api` (corre migración + seed y expone `3000`).
