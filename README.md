@@ -6,8 +6,10 @@ Descripción breve
 - Reglas clave: estados en secuencia (Abierto → En progreso → Resuelto → Cerrado), máximo 5 tickets en progreso por técnico, crear ticket requiere cliente y categoría válidos.
 
 Coder / Clan
-- Nombre: __________________
-- Clan: _____________________
+- Nombre:  Luis David Ducuara cadavid 
+- Clan: Nest Js am Sebas (satoshi)
+- url git: https://github.com/LuisDa87/prueba-nest
+
 
 Requisitos previos
 - Node.js 18+ y npm.
