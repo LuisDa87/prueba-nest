@@ -9,7 +9,7 @@ Coder / Clan
 - Nombre:  Luis David Ducuara cadavid 
 - Clan: Nest Js am Sebas (satoshi)
 - url git: https://github.com/LuisDa87/prueba-nest
-
+- url Swagger: http://localhost:3000/docs#/   (la mayoria de endpoints requieren bearer tocken inicia seccion para generar este tocken)
 
 Requisitos previos
 - Node.js 18+ y npm.
