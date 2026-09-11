@@ -1,9 +1,9 @@
 {
-  "name": "entrega2",
+  "name": "tech-helpdesk-api",
   "version": "1.0.0",
-  "description": "TechHelpDesk soporte técnico con NestJS",
+  "description": "Role-based technical support ticket API built with NestJS, TypeORM, PostgreSQL, JWT, and Swagger.",
   "license": "ISC",
-  "author": "",
+  "author": "Luis David Ducuara",
   "scripts": {
     "start": "nest start",
     "start:dev": "nest start --watch",
@@ -60,5 +60,15 @@
     "@types/jest": "^29.5.12",
     "jest": "^29.7.0",
     "ts-jest": "^29.2.5"
-  }
+  },
+  "keywords": [
+    "nestjs",
+    "typescript",
+    "postgresql",
+    "typeorm",
+    "jwt",
+    "rest-api",
+    "swagger",
+    "docker"
+  ]
 }
