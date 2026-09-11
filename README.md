@@ -1,65 +1,129 @@
-TechHelpDesk – API de Soporte Técnico (NestJS + TypeORM + PostgreSQL)
+# TechHelpDesk API
 
-Descripción breve
-- API REST para el ciclo de vida de tickets de soporte (roles Admin, Technician, Client).
-- Stack: NestJS 10, TypeORM, PostgreSQL, JWT, Swagger.
-- Reglas clave: estados en secuencia (Abierto → En progreso → Resuelto → Cerrado), máximo 5 tickets en progreso por técnico, crear ticket requiere cliente y categoría válidos.
+A role-based REST API for managing the complete lifecycle of technical support tickets.
 
-Coder / Clan
-- Nombre:  Luis David Ducuara cadavid 
-- Clan: Nest Js am Sebas (satoshi)
-- url git: https://github.com/LuisDa87/prueba-nest
-- url Swagger: http://localhost:3000/docs#/   (la mayoria de endpoints requieren bearer tocken inicia seccion para generar este tocken)
+Built with NestJS, TypeORM, and PostgreSQL, the project demonstrates modular backend architecture, authentication, authorization, data validation, database migrations, API documentation, and automated testing.
 
-Requisitos previos
-- Node.js 18+ y npm.
-- Docker Desktop (para levantar Postgres y/o la API en contenedor).
-- Opcional: PostgreSQL local si no usas Docker para la base.
+## Core capabilities
 
-Ejecución con Docker (recomendado)
-1) Levanta la base: `docker compose up -d db` (DB `techhelpdesk`).
-2) (Opcional) Levanta la API: `docker compose up -d api` (corre migración + seed y expone `3000`).
-3) Logs API: `docker compose logs -f api`
-4) Detener: `docker compose down` (agrega `-v` si quieres borrar datos).
+- JWT authentication with access and refresh tokens.
+- Role-based authorization for administrators, technicians, and clients.
+- Complete ticket lifecycle management.
+- Technician assignment and workload validation.
+- PostgreSQL persistence through TypeORM.
+- Database migrations and reproducible seed data.
+- Interactive OpenAPI documentation with Swagger.
+- Docker-based local environment.
 
-Ejecución local (host)
-1) `npm install`
-2) Migraciones: `DB_HOST=localhost npm run db:migrate`
-3) Seed: `DB_HOST=localhost npm run seed`
-4) Arrancar dev: `npm run start:dev`
-   - Health: `GET http://localhost:3000/`
-   - Swagger: `http://localhost:3000/docs`
+## Business rules
 
-Cómo autenticarse y usar roles
-1) `POST /auth/login` con credenciales seed (abajo).
-2) En Swagger, pulsa “Authorize” y pega `Bearer <accessToken>`.
-3) Roles:
-   - Admin: CRUD de users/technicians/clients/categories/tickets.
-   - Technician: consulta y cambia estado de tickets asignados.
-   - Client: crea tickets y consulta su historial.
-4) Credenciales seed:
-   - Admin: `admin@techhelpdesk.com` / `admin123`
-   - Técnico: `tech@techhelpdesk.com` / `tech123`
-   - Cliente: `client@techhelpdesk.com` / `client123`
+- Tickets move through an enforced sequence: `Open → In Progress → Resolved → Closed`.
+- A technician can have no more than five tickets in progress.
+- A ticket can only be created for an existing client and category.
+- Clients can view their own ticket history.
+- Technicians can only manage tickets assigned to them.
+- Administrative operations are protected by role-based authorization.
 
-Resumen de endpoints (usa Swagger para ejemplos)
-- Auth: `POST /auth/register`, `POST /auth/login`, `POST /auth/refresh`
-- Users (solo Admin): CRUD `/users`
-- Categories (solo Admin CRUD, lectura para todos): `/categories`
-- Technicians (solo Admin CRUD, lectura admin/tech): `/technicians`
-- Clients (solo Admin CRUD): `/clients` (crear requiere `userId` de un user con rol client)
-- Tickets:
-  - Crear (Admin/Client): `POST /tickets`
-  - Listar todos (Admin): `GET /tickets`
-  - Obtener: `GET /tickets/:id`
-  - Historial por cliente: `GET /tickets/client/:id` (cliente solo ve los suyos)
-  - Por técnico: `GET /tickets/technician/:id` (técnico solo ve los suyos)
-  - Cambiar estado: `PATCH /tickets/:id/status` (Admin/Tech, valida secuencia y capacidad)
-  - Actualizar prioridad/asignación: `PATCH /tickets/:id` (Admin)
+## Architecture
 
-Pruebas
-- Unitarias (tickets): `npm run test`
-- Cobertura: `npm run test:cov` (objetivo ≥ 40%).
+```mermaid
+flowchart TD
+    A[REST Client] --> B[NestJS Controllers]
+    B --> C[Services and Business Rules]
+    C --> D[TypeORM and PostgreSQL]
+```
 
-Dump SQL
-- Genera uno con `pg_dump -U <user> techhelpdesk > techhelpdesk_dump.sql` después de migrar y seedear.
+## Technology stack
+
+| Area | Technologies |
+| --- | --- |
+| Backend | NestJS 10, TypeScript, Node.js |
+| Database | PostgreSQL, TypeORM |
+| Security | JWT, Passport, bcrypt, role-based guards |
+| Validation | class-validator, class-transformer |
+| Documentation | Swagger / OpenAPI |
+| Testing | Jest, ts-jest |
+| Infrastructure | Docker, Docker Compose |
+
+## Main API resources
+
+- `POST /auth/register`
+- `POST /auth/login`
+- `POST /auth/refresh`
+- `/users`
+- `/categories`
+- `/technicians`
+- `/clients`
+- `/tickets`
+
+Detailed request and response examples are available at `http://localhost:3000/docs` after starting the application.
+
+## Run with Docker
+
+### Prerequisites
+
+- Docker Desktop
+- Docker Compose
+
+Start the database:
+
+```bash
+docker compose up -d db
+```
+
+Start the API:
+
+```bash
+docker compose up -d api
+```
+
+View API logs:
+
+```bash
+docker compose logs -f api
+```
+
+The API runs at `http://localhost:3000` and Swagger is available at `http://localhost:3000/docs`.
+
+## Run locally
+
+### Prerequisites
+
+- Node.js 18 or later
+- npm
+- PostgreSQL
+
+```bash
+npm install
+DB_HOST=localhost npm run db:migrate
+DB_HOST=localhost npm run seed
+npm run start:dev
+```
+
+## Development credentials
+
+The repository includes seed users exclusively for local development and demonstration:
+
+| Role | Email | Password |
+| --- | --- | --- |
+| Administrator | `admin@techhelpdesk.com` | `admin123` |
+| Technician | `tech@techhelpdesk.com` | `tech123` |
+| Client | `client@techhelpdesk.com` | `client123` |
+
+These credentials must never be used in a production environment.
+
+## Testing
+
+```bash
+# Run the test suite
+npm run test
+
+# Generate a coverage report
+npm run test:cov
+```
+
+## Author
+
+**Luis David Ducuara Cadavid**  
+Backend & Automation Developer · Mechatronics Engineering Student  
+[GitHub](https://github.com/LuisDa87) · [LinkedIn](https://www.linkedin.com/in/luisdavidd/)
